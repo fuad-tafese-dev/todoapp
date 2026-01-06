@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package todo;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "todoapp/proto/pb;pb";
+
+// Core task model
+message Task {
+  uint64 id = 1;
+  string description = 2;
+  bool done = 3;
+  google.protobuf.Timestamp due_date = 4;
+}
+
+// AddTask RPC messages
+message AddTaskRequest {
+  string description = 1;
+  google.protobuf.Timestamp due_date = 2;
+}
+
+message AddTaskResponse {
+  uint64 id = 1;
+}
+
+// ListTasks RPC messages
+message ListTasksRequest {}  // Empty request
+
+message ListTasksResponse {
+  repeated Task tasks = 1;
+}
+
+// NEW: MarkTaskDone RPC messages
+message MarkTaskDoneRequest {
+  uint64 id = 1;
+}
+
+message MarkTaskDoneResponse {
+  bool success = 1;
+}
+
+// NEW: GetTasksByDate RPC messages
+message GetTasksByDateRequest {
+  google.protobuf.Timestamp date = 1;
+}
+
+message GetTasksByDateResponse {
+  repeated Task tasks = 1;
+}
+
+// Service definition
+service TodoService {
+  rpc AddTask(AddTaskRequest) returns (AddTaskResponse);
+  rpc ListTasks(ListTasksRequest) returns (ListTasksResponse);
+  rpc MarkTaskDone(MarkTaskDoneRequest) returns (MarkTaskDoneResponse);
+  rpc GetTasksByDate(GetTasksByDateRequest) returns (GetTasksByDateResponse);
+}
